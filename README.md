@@ -7,6 +7,7 @@ We provide Paddle & Pytorch codes of PCFN.
 
 ## Paddle 
 version: PaddlePaddle 2.0.1 <br>
+Batch size: 8<br>
 Optimizer: SGD <br>
 Lr： 0.007 <br>
 Schedule： ReduceOnPlateau (Factor=0.3) <br>
@@ -15,6 +16,7 @@ Schedule： ReduceOnPlateau (Factor=0.3) <br>
 ## Pytorch
 We only tested SCN (the sub-network of PCFN) in the compeitition hosted by SenseTime in 2020 (Ranked 9th)
 
+Batch size: 4<br>
 Optimizer: SGD <br>
 Lr： 0.007 <br>
 Schedule： ReduceOnPlateau (Factor=0.1) <br>
