@@ -119,7 +119,7 @@ class Semantic_DeBlock(nn.Layer):
 
         return output
 
-
+# The structure of PCFN
 # proposed method
 # mutli-task change detection
 class PCF_Unet_CD(nn.Layer):
