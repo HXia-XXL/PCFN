@@ -1,5 +1,5 @@
 # Deep-Siamese-Post-Classfication-Fusion-Network (PCFN)
-This is the implementation of Deep Siamese Post Classfication Network for Semantic Change Detection in Multi-temporal Remote Sensing Images
+This is the implementation of Deep Siamese Post Classfication Fusion Network for Semantic Change Detection in Multi-temporal Remote Sensing Images
 
 ![](./PCFN.png "fig")
 
