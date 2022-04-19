@@ -21,12 +21,12 @@ Schedule： ReduceOnPlateau (Factor=0.1) <br>
 Test time augmentation (TTA) <br>
 
 Loss:<br>
-![image](https://user-images.githubusercontent.com/44633898/163906521-8e089ed5-79ac-4a2d-adf5-52930174b41e.png)
+![image](https://user-images.githubusercontent.com/44633898/163906521-8e089ed5-79ac-4a2d-adf5-52930174b41e.png)<br>
 Note that the class weights need to be set inversely proportional to the number of training examples or manually in $L_\text{SCD}$
 
 
 ## Datasets
-We merge the land cover categories in SECOND dataset, the processed dataset can be available in [BaiduDrive](链接地址 "（可选）添加一个标题")
+We merge the land cover categories in SECOND dataset, the processed dataset can be available in [BaiduDrive](链接地址 "（可选）添加一个标题"). For the origianl SECOND dataset, please contact CAPTAIN-WHU. <br>
 Since images of HRSCD cannot be distributed in the network, we could not share the HRSCD dataset. If you need, please contact Dr.Daudt.
 
 ## Future Work
