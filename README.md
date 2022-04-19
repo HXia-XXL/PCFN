@@ -19,6 +19,7 @@ Optimizer: SGD <br>
 Lr： 0.007 <br>
 Schedule： ReduceOnPlateau (Factor=0.1) <br>
 Test time augmentation (TTA) <br>
+Dilation Block <br>
 
 Loss:<br>
 ![image](https://user-images.githubusercontent.com/44633898/163906521-8e089ed5-79ac-4a2d-adf5-52930174b41e.png)<br>
