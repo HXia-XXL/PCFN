@@ -3,7 +3,7 @@ This is the implementation of Deep Siamese Post Classfication Network for Semant
 
 ![](./PCFN.png "fig")
 
-We provide Paddle & Pytorch verson of PCFN.
+We provide Paddle & Pytorch codes of PCFN.
 
 ## Paddle 
 version: PaddlePaddle 2.0.1 <br>
