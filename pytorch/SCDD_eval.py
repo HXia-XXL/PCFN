@@ -95,8 +95,7 @@ def Eval():
     IoU_mean = (iu[0] + iu[1]) / 2
     Sek = (kappa_n0 * math.exp(IoU_fg)) / math.e
     Score = 0.3*IoU_mean + 0.7*Sek
-    print(hist)
-    print(kappa_n0)
+
     print('Mean IoU = %.5f' % IoU_mean)
     print('Sek = %.5f' % Sek)
     print('Score = %.5f' % Score)
