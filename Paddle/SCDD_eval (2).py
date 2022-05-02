@@ -43,44 +43,7 @@ class ConfusionMatrix():
             label_array = GT[index, :, :]
 
             self.get_hist(infer_array, label_array)
-
-    def Evaluate(self):
-        hist = self.hist.copy()
-        hist_n0 = self.hist.copy()
-        hist_n0[0][0] = 0
-        self.hist = hist_n0
-        kappa_n0 = self.cal_kappa()
-
-        self.hist = hist
-        
-        hist_fg = self.hist[1:, 1:]
-        c2hist = np.zeros((2, 2))
-        c2hist[0][0] = self.hist[0][0]
-        c2hist[0][1] = self.hist.sum(1)[0] - self.hist[0][0]
-        c2hist[1][0] = self.hist.sum(0)[0] - self.hist[0][0]
-        c2hist[1][1] = hist_fg.sum()
-        
-        
-        
-        iu = np.diag(c2hist) / (c2hist.sum(1) + c2hist.sum(0) - np.diag(c2hist) + 1e-8)
-        IoU_fg = iu[1]
-        IoU = (iu[0] + iu[1]) / 2
-
-        # miou
-        iou = np.diag(self.hist) / (self.hist.sum(1) + self.hist.sum(0) - np.diag(self.hist) + 1e-8)
-        mIoU = np.nanmean(iou)
-
-        # dice 
-        dice = 2*c2hist[1][1]/(c2hist[0][1]+c2hist[1][1]+c2hist[1][0]+c2hist[1][1])
-        # accuracy
-        sum_samples = np.sum(self.hist)
-        acc_samples = 0
-        for i in range(self.num_classes):
-            acc_samples += self.hist[i][i]
-        accuracy = acc_samples / sum_samples
-        # self.hist = np.zeros([self.num_classes, self.num_classes], dtype='int64')
-
-        return dice, IoU, mIoU, kappa_n0, self.hist, accuracy
+            
 
     def Evaluate_revised(self):
 
@@ -91,7 +54,7 @@ class ConfusionMatrix():
         c2hist[1][0] = self.hist.sum(0)[0] - self.hist[0][0]
         c2hist[1][1] = hist_fg.sum()
 
-        kappa_n0 = self.cal_kappa()
+        kappa = self.cal_kappa()
         iu = np.diag(c2hist) / (c2hist.sum(1) + c2hist.sum(0) - np.diag(c2hist) + 1e-8)
         IoU_fg = iu[1]
         # IoU = (iu[0] + iu[1]) / 2
@@ -111,5 +74,5 @@ class ConfusionMatrix():
             acc_samples += self.hist[i][i]
         accuracy = acc_samples / sum_samples
         
-        # return F1, mIoU, accuracy, self.hist, iou
-        return F1, mF1, accuracy, self.hist, F1_pre
+        
+        return F1, mF1, accuracy, F1_pre
