@@ -260,10 +260,10 @@ class PCF_Unet_CD_32(nn.Layer):
 
         output = self.CA(cbam1_5,cbam2_5)
 
-        output = self.relu((self.bn1(self.finalconv0(self.up(output)))))
+        output = self.relu((self.bn1(self.finalconv0(output))))
         output = self.relu((self.bn2(self.finalconv1(output))))
         # output = self.relu(self.finalconv2(output))
-        output = self.semantic_from_to(output)
+        output = self.semantic_from_to(self.up(output))
 
         return output1, output2, output
 
