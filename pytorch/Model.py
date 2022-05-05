@@ -51,6 +51,30 @@ class Out_Block(nn.Module):
 
         return self.relu(bn1)
 
+# Feature Difference Enhancement (FDE)
+class FDE(nn.Module):
+    def __init__(self, kernel_size=7):
+        super(FDE, self).__init__()
+
+        assert kernel_size in (3, 7), 'kernel size must be 3 or 7'
+        padding = 3 if kernel_size == 7 else 1
+
+        self.conv1 = nn.Conv2d(2, 1, kernel_size, padding=padding)
+        self.sigmoid = nn.Sigmoid()
+
+    def forward(self,x1,x2):
+        feat = torch.cat([x1, x2], 1)
+        x = torch.abs(x2-x1)
+        
+        avg_out = torch.mean(x, axis=1, keepdim=1)
+        max_out = torch.max(x, axis=1, keepdim=1)
+        
+        x = torch.concat([avg_out, max_out], axis=1)
+        x = self.conv1(x)
+        x = self.sigmoid(x)
+        out = feat*x + feat
+        return out
+    
 
 class VGG16(nn.Module):
     def __init__(self):
