@@ -198,6 +198,7 @@ class PCFN(nn.Module):
         self.relu = nn.ReLU()
         
         # SFN
+        self.FDE = FDE()
         self.finalconv1 = nn.Conv2d(128, 64, kernel_size=3, stride=1,
                                     padding=1, bias=False)
         self.finalconv2 = nn.Conv2d(64, 64, kernel_size=3, stride=1,
@@ -237,7 +238,8 @@ class PCFN(nn.Module):
         cbam2_5 = self.CBAM2_5(torch.cat([self.up(cbam2_4), feat1_1, feat2_1], 1))
            
         # SCD output
-        output = self.relu(self.finalconv1(torch.cat([cbam1_5,cbam2_5]))
+        output = self.FDE(cbam1_5,cbam2_5)
+        output = self.relu(self.finalconv1(output))
         output = self.relu(self.finalconv2(output))
         output = self.relu(self.finalconv3(self.up(output)))
                                
