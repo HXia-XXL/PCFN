@@ -148,6 +148,83 @@ class Dblock(nn.Module):
         out = x + dilate1_out + dilate2_out + dilate3_out + dilate4_out  # + dilate5_out
         return out
 
+    
+# PCFN pytorch version
+class PCFN(nn.Module):
+    def __init__(self):
+        # backbone encoder
+        super(PCFN, self).__init__(LCM_class_num, SCD_class_num)
+        self.resnet = Resnet()
+
+        # Siamese Decoders
+        self.CBAM1_1 = BasicBlock(inplanes=2 * 512, planes=512, stride=1)
+        self.CBAM1_2 = BasicBlock(inplanes=2 * 256 + 512, planes=512, stride=1)
+        self.CBAM1_3 = BasicBlock(inplanes=2 * 128 + 512, planes=256, stride=1)
+        self.CBAM1_4 = BasicBlock(inplanes=2 * 64 + 256, planes=128, stride=1)
+        self.CBAM1_5 = BasicBlock(inplanes=2 * 64 + 128, planes=64, stride=1)
+
+        self.CBAM2_1 = BasicBlock(inplanes=2 * 512, planes=512, stride=1)
+        self.CBAM2_2 = BasicBlock(inplanes=2 * 256 + 512, planes=512, stride=1)
+        self.CBAM2_3 = BasicBlock(inplanes=2 * 128 + 512, planes=256, stride=1)
+        self.CBAM2_4 = BasicBlock(inplanes=2 * 64 + 256, planes=128, stride=1)
+        self.CBAM2_5 = BasicBlock(inplanes=2 * 64 + 128, planes=64, stride=1)
+
+        self.up = nn.UpsamplingNearest2d(scale_factor=2)
+        self.pool = nn.MaxPool2d(kernel_size=2)
+        self.relu = nn.ReLU()
+        
+        # SFN
+        self.finalconv1 = nn.Conv2d(128, 64, kernel_size=3, stride=1,
+                                    padding=1, bias=False)
+        self.finalconv2 = nn.Conv2d(64, 64, kernel_size=3, stride=1,
+                                    padding=1, bias=False)
+        self.finalconv3 = nn.Conv2d(64, 64, kernel_size=3, stride=1,
+                                    padding=1, bias=False)
+        
+        self.conv1d_SCD = nn.Conv2d(64, SCD_class_num, kernel_size=1, stride=1,
+                                     padding=0, bias=False)
+        
+        # LCM predict
+        self.LCM_conv1 = nn.Conv2d(64, 32, kernel_size=3, stride=1,
+                                    padding=1, bias=False)
+        self.LCM_conv2 = nn.Conv2d(64, 32, kernel_size=3, stride=1,
+                                    padding=1, bias=False)
+        self.conv1d_LCM1 = nn.Conv2d(32, LCM_class_num, kernel_size=1, stride=1,
+                                     padding=0, bias=False)
+        self.conv1d_LCM2 = nn.Conv2d(32, LCM_class_num, kernel_size=1, stride=1,
+                                     padding=0, bias=False)
+
+    def forward(self, input1, input2):
+        # encoding 
+        [feat1_1, feat1_2, feat1_3, feat1_4, feat1_5] = self.resnet(input1)
+        [feat2_1, feat2_2, feat2_3, feat2_4, feat2_5] = self.resnet(input2)
+        
+        # decoding
+        cbam1_1 = self.CBAM1_1(torch.cat([feat1_5, feat2_5])
+        cbam1_2 = self.CBAM1_2(torch.cat([self.up(cbam1_1), feat1_4, feat2_4], 1))
+        cbam1_3 = self.CBAM1_3(torch.cat([self.up(cbam1_2), feat1_3, feat2_3], 1))
+        cbam1_4 = self.CBAM1_4(torch.cat([self.up(cbam1_3), feat1_2, feat2_2], 1))
+        cbam1_5 = self.CBAM1_5(torch.cat([self.up(cbam1_4), feat1_1, feat2_1], 1)
+
+        cbam2_1 = self.CBAM2_1(torch.cat([feat1_5, feat2_5])
+        cbam2_2 = self.CBAM2_2(torch.cat([self.up(cbam2_1), feat1_4, feat2_4], 1))
+        cbam2_3 = self.CBAM2_3(torch.cat([self.up(cbam2_2), feat1_3, feat2_3], 1))
+        cbam2_4 = self.CBAM2_4(torch.cat([self.up(cbam2_3), feat1_2, feat2_2], 1))
+        cbam2_5 = self.CBAM2_5(torch.cat([self.up(cbam2_4), feat1_1, feat2_1], 1))
+           
+        # SCD output
+        output = self.relu(self.finalconv1(torch.cat([cbam1_5,cbam2_5]))
+        output = self.relu(self.finalconv2(output))
+        output = self.relu(self.finalconv3(self.up(output)))
+                               
+        output = self.conv1d_SCD(output)
+                           
+        # LCM predictions
+        output1 = self.conv1d_LCM1(self.relu(self.LCM_conv1(self.up(cbam1_5))))
+        output2 = self.conv1d_LCM2(self.relu(self.LCM_conv2(self.up(cbam2_5))))
+
+        return output1, output2, output
+
 
 # difference discrimination network
 class CDNet(nn.Module):
