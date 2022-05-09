@@ -92,7 +92,7 @@ class Semantic_Block(nn.Layer):
         return output
 
 
-# four layer output decoder
+# output decoder
 class Semantic_DeBlock(nn.Layer):
     def __init__(self, inplanes, planes, num_class):
         # backbone encoder
@@ -101,10 +101,7 @@ class Semantic_DeBlock(nn.Layer):
 
         self.finalconv1 = nn.Conv2D(inplanes, planes, kernel_size=3, stride=1,
                                     padding=1, bias_attr=False)
-        # self.finalconv2 = nn.Conv2D(planes, planes, kernel_size=3, stride=1,
-        #                              padding=1, bias_attr=False)
-        # self.finalconv3 = nn.Conv2D(planes, planes, kernel_size=3, stride=1,
-        #                             padding=1, bias_attr=False)
+        
 
         self.conv1d_img = nn.Conv2D(planes, num_class, kernel_size=1, stride=1,
                                     padding=0, bias_attr=False,
@@ -113,8 +110,7 @@ class Semantic_DeBlock(nn.Layer):
     def forward(self, feature):
         output = feature
         output = self.relu(self.finalconv1(output))
-        # output = self.relu(self.finalconv2(output))
-        # output = self.relu(self.finalconv3(output))
+       
         output = self.conv1d_img(output)
 
         return output
@@ -266,78 +262,6 @@ class PCF_Unet_CD_32(nn.Layer):
         output = self.semantic_from_to(self.up(output))
 
         return output1, output2, output
-
-
-
-
-
-# # mutli-task change detection for visualization of FDE
-# class PCF_Unet_CD_visualize_FDE(nn.Layer):
-#     def __init__(self,num_class_LCM = 5, num_class_semantic=14):
-#         # backbone encoder
-#         super(PCF_Unet_CD_visualize_FDE, self).__init__()
-#         self.resnet = Resnet()
-#         # self.dblock = Dblock(512)
-
-#         self.CA = ChangeAttention_visualize_FDE()
-
-#         # 9/18 double u-net
-#         self.CBAM1_1 = BasicBlock(inplanes=2 * 512, planes=512, stride=1)
-#         self.CBAM1_2 = BasicBlock(inplanes=2 * 256 + 512, planes=512, stride=1)
-#         self.CBAM1_3 = BasicBlock(inplanes=2 * 128 + 512, planes=256, stride=1)
-#         self.CBAM1_4 = BasicBlock(inplanes=2 * 64 + 256, planes=128, stride=1)
-#         self.CBAM1_5 = BasicBlock(inplanes=2 * 64 + 128, planes=64, stride=1)
-
-#         self.CBAM2_1 = BasicBlock(inplanes=2 * 512, planes=512, stride=1)
-#         self.CBAM2_2 = BasicBlock(inplanes=2 * 256 + 512, planes=512, stride=1)
-#         self.CBAM2_3 = BasicBlock(inplanes=2 * 128 + 512, planes=256, stride=1)
-#         self.CBAM2_4 = BasicBlock(inplanes=2 * 64 + 256, planes=128, stride=1)
-#         self.CBAM2_5 = BasicBlock(inplanes=2 * 64 + 128, planes=64, stride=1)
-
-#         self.up = nn.Upsample(scale_factor=2)
-#         self.pool = nn.MaxPool2D(kernel_size=2)
-#         self.relu = nn.ReLU()
-
-#         self.CBAM_semantic_1 = Semantic_DeBlock(inplanes=64, planes=32, num_class=num_class_LCM)
-#         self.CBAM_semantic_2 = Semantic_DeBlock(inplanes=64, planes=32, num_class=num_class_LCM)
-
-#         self.finalconv0 = nn.Conv2D(128 , 32, kernel_size=3, stride=1,
-#                                     padding=1, bias_attr=False)
-#         self.bn1= nn.BatchNorm2D(32)
-#         self.finalconv1 = nn.Conv2D(32, 32, kernel_size=3, stride=1,
-#                                     padding=1, bias_attr=False)
-#         self.bn2 = nn.BatchNorm2D(32)
-#         # self.finalconv2 = nn.Conv2D(64, 64, kernel_size=3, stride=1,
-#         #                             padding=1, bias_attr=False)
-
-#         self.semantic_from_to = Semantic_DeBlock(inplanes=32, planes=32, num_class=num_class_semantic)
-
-#     def forward(self, input1, input2):
-#         # 9/13 double u net
-#         [feat1_1, feat1_2, feat1_3, feat1_4, feat1_5] = self.resnet(input1)
-#         [feat2_1, feat2_2, feat2_3, feat2_4, feat2_5] = self.resnet(input2)
-
-#         cbam1_1 = self.CBAM1_1(paddle.concat([feat1_5, feat2_5], 1))
-#         cbam1_2 = self.CBAM1_2(paddle.concat([self.up(cbam1_1), feat1_4, feat2_4], 1))
-#         cbam1_3 = self.CBAM1_3(paddle.concat([self.up(cbam1_2), feat1_3, feat2_3], 1))
-#         cbam1_4 = self.CBAM1_4(paddle.concat([self.up(cbam1_3), feat1_2, feat2_2], 1))
-#         cbam1_5 = self.CBAM1_5(paddle.concat([self.up(cbam1_4), feat1_1, feat2_1], 1))
-
-#         cbam2_1 = self.CBAM2_1(paddle.concat([feat1_5, feat2_5], 1))
-#         cbam2_2 = self.CBAM2_2(paddle.concat([self.up(cbam2_1), feat1_4, feat2_4], 1))
-#         cbam2_3 = self.CBAM2_3(paddle.concat([self.up(cbam2_2), feat1_3, feat2_3], 1))
-#         cbam2_4 = self.CBAM2_4(paddle.concat([self.up(cbam2_3), feat1_2, feat2_2], 1))
-#         cbam2_5 = self.CBAM2_5(paddle.concat([self.up(cbam2_4), feat1_1, feat2_1], 1))
-
-#         # # semantic
-#         # cbam1 = self.conv1(cbam1_5)
-#         # # cbam2 = self.conv2(cbam2_5)
-#         # output1 = self.CBAM_semantic_1(self.up(cbam1_5))
-#         # output2 = self.CBAM_semantic_2(self.up(cbam2_5))
-
-#         output = self.CA(cbam1_5,cbam2_5)
-
-#         return output
 
 
 
