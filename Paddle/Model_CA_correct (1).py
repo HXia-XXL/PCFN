@@ -204,14 +204,14 @@ class PCF_Unet_CD_32(nn.Layer):
         self.CBAM1_1 = BasicBlock(inplanes=2 * 512, planes=512, stride=1)
         self.CBAM1_2 = BasicBlock(inplanes=2 * 256 + 512, planes=256, stride=1)
         self.CBAM1_3 = BasicBlock(inplanes=2 * 128 + 256, planes=128, stride=1)
-        self.CBAM1_4 = BasicBlock(inplanes=2 * 64 + 128, planes=32, stride=1)
-        self.CBAM1_5 = BasicBlock(inplanes=2 * 64 + 32, planes=32, stride=1)
+        self.CBAM1_4 = BasicBlock(inplanes=2 * 64 + 128, planes=64, stride=1)
+        self.CBAM1_5 = BasicBlock(inplanes=2 * 64 + 64, planes=32, stride=1)
 
         self.CBAM2_1 = BasicBlock(inplanes=2 * 512, planes=512, stride=1)
         self.CBAM2_2 = BasicBlock(inplanes=2 * 256 + 512, planes=256, stride=1)
         self.CBAM2_3 = BasicBlock(inplanes=2 * 128 + 256, planes=128, stride=1)
-        self.CBAM2_4 = BasicBlock(inplanes=2 * 64 + 128, planes=32, stride=1)
-        self.CBAM2_5 = BasicBlock(inplanes=2 * 64 + 32, planes=32, stride=1)
+        self.CBAM2_4 = BasicBlock(inplanes=2 * 64 + 128, planes=64, stride=1)
+        self.CBAM2_5 = BasicBlock(inplanes=2 * 64 + 64, planes=32, stride=1)
 
         self.up = nn.Upsample(scale_factor=2)
         self.pool = nn.MaxPool2D(kernel_size=2)
