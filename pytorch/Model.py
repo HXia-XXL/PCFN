@@ -76,46 +76,6 @@ class FDE(nn.Module):
         return out
     
 
-class VGG16(nn.Module):
-    def __init__(self):
-        super(VGG16, self).__init__()
-        model = torchvision.models.vgg16(pretrained=True)
-
-        model.features[0].in_channels = 6
-
-        self.relu = model.features[1]
-        self.pool = model.features[4]
-        self.conv1 = nn.Conv2d(6, 64, kernel_size=3, stride=1, padding=1)
-        self.conv2 = model.features[2]
-        self.conv3 = model.features[5]
-        self.conv4 = model.features[7]
-        self.conv5 = model.features[10]
-        self.conv6 = model.features[12]
-        self.conv7 = model.features[14]
-        self.conv8 = model.features[17]
-        self.conv9 = model.features[19]
-        self.conv10 = model.features[21]
-        self.conv11 = model.features[24]
-        self.conv12 = model.features[26]
-        self.conv13 = model.features[28]
-
-    def forward(self, input):
-        conv1 = self.relu(self.conv1(input))
-        conv2 = self.relu(self.conv2(conv1))
-        conv3 = self.relu(self.conv3(self.pool(conv2)))
-        conv4 = self.relu(self.conv4(conv3))
-        conv5 = self.relu(self.conv5(self.pool(conv4)))
-        conv6 = self.relu(self.conv6(conv5))
-        conv7 = self.relu(self.conv7(conv6))
-        conv8 = self.relu(self.conv8(self.pool(conv7)))
-        conv9 = self.relu(self.conv9(conv8))
-        conv10 = self.relu(self.conv10(conv9))
-        conv11 = self.relu(self.conv11(self.pool(conv10)))
-        conv12 = self.relu(self.conv12(conv11))
-        conv13 = self.relu(self.conv13(conv12))
-
-        return [conv2, conv4, conv7, conv10, conv13]
-
 
 nonlinearity = partial(F.relu, inplace=True)
 
