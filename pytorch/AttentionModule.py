@@ -45,7 +45,7 @@ class SpatialAttention(nn.Module):
         x = self.conv1(x)
         return self.sigmoid(x)
 
-
+# decoding block used in PCFN
 class BasicBlock(nn.Module):
     expansion = 1
 
@@ -57,7 +57,7 @@ class BasicBlock(nn.Module):
         self.conv2 = conv3x3(planes, planes)
         self.bn2 = nn.BatchNorm2d(planes)
 
-        self.ca = ChannelAttention(planes)
+        self.ca = ChannelAttention(inplanes)
         self.sa = SpatialAttention()
 
         self.downsample = downsample
@@ -66,15 +66,15 @@ class BasicBlock(nn.Module):
     def forward(self, x):
         #residual = x
 
-
-        out = self.conv1(x)
+        out = self.ca(x) * x
+        out = self.conv1(out)
         out = self.bn1(out)
         out = self.relu(out)
 
         out = self.conv2(out)
         out = self.bn2(out)
 
-        out = self.ca(out) * out
+        
         out = self.sa(out) * out
 
         if self.downsample is not None:
