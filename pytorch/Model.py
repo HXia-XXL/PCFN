@@ -196,18 +196,19 @@ class PCFN(nn.Module):
         cbam2_3 = self.CBAM2_3(torch.cat([self.up(cbam2_2), feat1_3, feat2_3], 1))
         cbam2_4 = self.CBAM2_4(torch.cat([self.up(cbam2_3), feat1_2, feat2_2], 1))
         cbam2_5 = self.CBAM2_5(torch.cat([self.up(cbam2_4), feat1_1, feat2_1], 1))
-           
+        
+                               
+        # LCM predictions
+        output1 = self.conv1d_LCM1(self.relu(self.LCM_conv1(self.up(cbam1_5))))
+        output2 = self.conv1d_LCM2(self.relu(self.LCM_conv2(self.up(cbam2_5))))
+                               
         # SCD output
         output = self.FDE(cbam1_5,cbam2_5)
         output = self.relu(self.finalconv1(output))
         output = self.relu(self.finalconv2(output))
         output = self.relu(self.finalconv3(self.up(output)))
                                
-        output = self.conv1d_SCD(output)
-                           
-        # LCM predictions
-        output1 = self.conv1d_LCM1(self.relu(self.LCM_conv1(self.up(cbam1_5))))
-        output2 = self.conv1d_LCM2(self.relu(self.LCM_conv2(self.up(cbam2_5))))
+        output = self.conv1d_SCD(output) 
 
         return output1, output2, output
 
