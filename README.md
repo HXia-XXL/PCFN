@@ -25,13 +25,14 @@ Dilation Block <br>
 
 Loss:<br>
 ![image](https://user-images.githubusercontent.com/44633898/163906521-8e089ed5-79ac-4a2d-adf5-52930174b41e.png)<br>
-Note that the class weights need to be set inversely proportional to the number of training examples or manually in $L_\text{SCD}$
-
+In $L_\text{SCD}$, note that the class weights need to be set manually or inversely proportional to the number of training examples.
 
 ## Datasets
-We merge the land cover categories in SECOND dataset, the processed dataset can be available in [BaiduDrive](链接地址 "（可选）添加一个标题"). <br>
-For the origianl SECOND dataset, please contact CAPTAIN-WHU. <br>
-Since images of HRSCD cannot be distributed in the network, we could not share the HRSCD dataset. If you need, please contact Dr.Daudt.
+To reduce the data amount of HRSCD dataset, we cropped the raw image to 2000*2000, and then resize to 512*512.<br>
+Only the T1,T2,LabelT1,LabelT2 of HRSCD are used. <br> 
+Since images of HRSCD cannot be distributed in the network, we could not share the HRSCD dataset. If you need, please contact Dr.Daudt.<br>
+We merge the land cover categories in SECOND dataset. <br>
+
 
 ## Future Work
 1. integrate thematic indices ([RGBi](https://rdrr.io/cran/uavRst/man/rgb_indices.html "（可选）添加一个标题") or NIRi) with CNN in arieal images.<br>
