@@ -27,11 +27,6 @@ Loss:<br>
 ![image](https://user-images.githubusercontent.com/44633898/163906521-8e089ed5-79ac-4a2d-adf5-52930174b41e.png)<br>
 In $L_\text{SCD}$, note that the class weights need to be set manually or inversely proportional to the number of training examples.
 
-## Datasets
-To reduce the data amount of HRSCD dataset, we cropped the raw image to 2000*2000, and then resize to 512*512.<br>
-Only the T1,T2,LabelT1,LabelT2 of HRSCD are used. <br> 
-Since images of HRSCD cannot be distributed in the network, we could not share the HRSCD dataset. If you need, please contact Dr.Daudt.<br>
-We merge the land cover categories in SECOND dataset. <br>
 
 
 ## Future Work
